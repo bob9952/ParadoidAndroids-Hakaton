@@ -7,9 +7,9 @@ numToFruitName = {
     3:"plum",
     4:"grape",
     5:"banana",
-    6:"diamond",
-    7:"diamond",
-    8:"diamond"
+    6:"totem-head1",
+    7:"totem-head2",
+    8:"totem-head3"
 }
 
 fruitNameToImage = {
@@ -18,13 +18,15 @@ fruitNameToImage = {
     "plum":pygame.image.load("Assets/plum.png"),
     "grape":pygame.image.load("Assets/grape.png"),
     "banana":pygame.image.load("Assets/banana.png"),
-    "diamond":pygame.image.load("Assets/diamond.png")
+    "totem-head1":pygame.image.load("Assets/totem-head1.png"),
+    "totem-head2":pygame.image.load("Assets/totem-head2.png"),
+    "totem-head3":pygame.image.load("Assets/totem-head3.png")
 }
 
 
-positions = [ [(45,120), (45, 220), (45, 325)], 
-             [(158, 120), (158, 220), (158, 325)], 
-             [(272, 120), (272, 220), (272, 325)]  ]
+positions = [ [(45,118), (45, 220), (45, 323)], 
+             [(158, 118), (158, 220), (158, 323)], 
+             [(272, 118), (272, 220), (272, 323)]  ]
 
 def drawOnSlot(screen, strips):
     global positions
@@ -32,10 +34,26 @@ def drawOnSlot(screen, strips):
         for j in range(3):
             fruitName = numToFruitName[strips[i][j]]
             image = fruitNameToImage[fruitName]
-            image = pygame.transform.scale(image, (85, 85))
-
-            screen.blit(image, positions[i][j])
-
+            
+            if strips[i][j] <= 5: 
+                image = pygame.transform.scale(image, (85, 85))
+                screen.blit(image, positions[i][j])
+            elif strips[i][j] == 6:
+                image = pygame.transform.scale(image, (85, 85))
+                x, y = positions[i][j]
+                y = y + 9  
+                screen.blit(image, (x, y))
+            elif strips[i][j] == 7:
+                image = pygame.transform.scale(image, (85, 97))
+                x, y = positions[i][j]
+                y = y - 2
+                screen.blit(image, (x, y))
+            elif strips[i][j] == 8:
+                image = pygame.transform.scale(image, (85, 85))
+                x, y = positions[i][j]
+                y = y - 4  
+                screen.blit(image, (x, y))                               
+            
 def buttonClicked(button):
     mouse_position = pygame.mouse.get_pos()
     
