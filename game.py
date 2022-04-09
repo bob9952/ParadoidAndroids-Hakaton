@@ -35,6 +35,15 @@ def drawOnSlot(screen, strips):
 
             screen.blit(image, positions[i][j])
 
+def spinClicked(spinButton):
+    mouse_position = pygame.mouse.get_pos()
+    
+    if spinButton.collidepoint(mouse_position):
+        if pygame.mouse.get_pressed()[0] == 1:
+            return True
+
+    return False
+
 
 pygame.init()
 width = 800
@@ -47,6 +56,8 @@ background_color = [250, 239, 147]
 
 slot_machine = pygame.image.load('Assets/slot-machine.png')
 
+spinButton = pygame.Rect(370, 120, 60, 60)
+
 run = True
 n = 0
 i, j, k = slot.selectShifts()
@@ -55,15 +66,17 @@ while run:
     screen.fill(background_color)
 
     screen.blit(slot_machine, (0, -40))
-    if not (n % 500): 
-        i, j, k = slot.selectShifts()    
-    drawOnSlot(screen, [slot.shift(slot.strip1,i), slot.shift(slot.strip2, j), slot.shift(slot.strip3, k)])
 
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
-
+        if event.type == pygame.MOUSEBUTTONDOWN:
+            if spinClicked(spinButton): 
+                i, j, k = slot.selectShifts()    
+    
+    drawOnSlot(screen, [slot.shift(slot.strip1,i), slot.shift(slot.strip2, j), slot.shift(slot.strip3, k)])
+            
     n += 1
 
     pygame.display.update()
