@@ -1,4 +1,3 @@
-from turtle import back
 import pygame
 import slot
 import time
@@ -51,7 +50,7 @@ def animate(screen, strips, i, j, k):
         if r < k:
             r += 1
 
-        drawCanvas()
+        drawCanvas(isFlipped=True)
         new_strips = [slot.shift(strips[0], p), slot.shift(strips[1], q), slot.shift(strips[2], r)]
         # slot.printSlot(new_strips)
 
@@ -111,6 +110,7 @@ balance_font = pygame.font.SysFont("Arial", 50, bold=True)
 multipliers_font = pygame.font.SysFont("Arial", 35, bold=True)
 
 slot_machine = pygame.image.load('Assets/slot-machine.png')
+slot_machine_flipped = pygame.image.load('Assets/slot-machine-flipped.png')
 background = pygame.image.load('Assets/background.jpg')
 background = pygame.transform.scale(background, (width, height))
 coins = pygame.image.load('Assets/coins.png')
@@ -141,7 +141,7 @@ current_j = 0
 current_k = 0
 
 
-def drawCanvas(row=-1, isWinningRow=False):
+def drawCanvas(row=-1, isWinningRow=False, isFlipped=False):
     screen.blit(background, (0, 0))
 
     if isWinningRow:
@@ -162,7 +162,10 @@ def drawCanvas(row=-1, isWinningRow=False):
         pygame.draw.rect(screen, (230, 230, 230), (30, 215, 335, 98))
         pygame.draw.rect(screen, (230, 230, 230), (30, 315, 335, 98))
 
-    screen.blit(slot_machine, (0, -40))
+    if isFlipped:
+        screen.blit(slot_machine_flipped, (0, -40))
+    else:
+        screen.blit(slot_machine, (0, -40))
     current_balance_text = balance_font.render(str(balance), True, (230, 0, 0))
     screen.blit(current_balance_text, (600, 60))
     screen.blit(coins, (550, 70))
@@ -212,6 +215,7 @@ while run:
             if buttonClicked(spinButton):
                 if balance >= bet_amount:
                     balance -= bet_amount
+
                     i, j, k = slot.selectShifts()
                     animate(screen, strips, i - current_i + strip_len, j - current_j + strip_len,
                             k - current_k + strip_len)
