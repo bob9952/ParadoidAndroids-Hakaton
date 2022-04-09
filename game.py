@@ -56,6 +56,8 @@ pygame.display.set_icon(logo)
 background_color = [230, 230, 230]
 
 balance_font = pygame.font.SysFont("Arial", 50)
+bet_amount_font = pygame.font.SysFont("Arial", 50)
+
 
 slot_machine = pygame.image.load('Assets/slot-machine.png')
 coins = pygame.image.load('Assets/coins.png')
@@ -78,7 +80,10 @@ while run:
     current_balance_text = balance_font.render(str(balance), True, (0, 0, 0))
     screen.blit(current_balance_text, (600, 60))
     screen.blit(coins, (550, 70))
-   
+    
+    # TODO: dynamic text aligment
+    bet_amount_text = bet_amount_font.render(str(bet_amount), True, (0, 0, 0))
+    screen.blit(bet_amount_text, (175, 515))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
