@@ -21,6 +21,7 @@ fruitNameToImage = {
     "diamond":pygame.image.load("Assets/diamond.png")
 }
 
+
 positions = [ [(45,120), (45, 220), (45, 325)], 
              [(158, 120), (158, 220), (158, 325)], 
              [(272, 120), (272, 220), (272, 325)]  ]
@@ -54,11 +55,16 @@ logo = pygame.image.load('Assets/banana.png')
 pygame.display.set_icon(logo)
 background_color = [250, 239, 147]
 
-slot_machine = pygame.image.load('Assets/slot-machine.png')
+balance_font = pygame.font.SysFont("Arial", 50)
 
+slot_machine = pygame.image.load('Assets/slot-machine.png')
 spinButton = pygame.Rect(370, 120, 60, 60)
 
+strips = [slot.strip1, slot.strip2, slot.strip3]
+
 run = True
+balance = 1000
+bet_amount = 10
 n = 0
 i, j, k = slot.selectShifts()
     
@@ -66,16 +72,22 @@ while run:
     screen.fill(background_color)
 
     screen.blit(slot_machine, (0, -40))
-
+    current_balance_text = balance_font.render("Balance: " + str(balance), True, (0, 0, 0))
+    screen.blit(current_balance_text, (500, 60))
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             run = False
         if event.type == pygame.MOUSEBUTTONDOWN:
             if spinClicked(spinButton): 
-                i, j, k = slot.selectShifts()    
+                if balance >= bet_amount:
+                    balance -= bet_amount
+                    i, j, k = slot.selectShifts()   
+                    strips = [slot.shift(slot.strip1,i), slot.shift(slot.strip2, j), slot.shift(slot.strip3, k)]
+                    multi = slot.check(strips)
+                    balance += multi * bet_amount 
     
-    drawOnSlot(screen, [slot.shift(slot.strip1,i), slot.shift(slot.strip2, j), slot.shift(slot.strip3, k)])
+    drawOnSlot(screen, strips)
             
     n += 1
 

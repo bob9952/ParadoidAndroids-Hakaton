@@ -4,17 +4,17 @@ import matplotlib.pyplot as plt
 
 weight = {}
 
-strip1 = [6, 7, 8, 5, 5, 3, 3, 4, 1, 4, 2, 2]
-strip2 = [3, 3, 1, 2, 2, 6, 7, 8, 3, 2, 5, 4]
-strip3 = [1, 3, 6, 7, 8, 5, 3, 4, 2, 2, 1, 1]
+strip1 = [6, 7, 8, 5, 5, 3, 3, 4, 1, 4, 2, 2, 1, 1]
+strip2 = [3, 3, 1, 2, 2, 6, 7, 8, 3, 2, 5, 4, 4, 1]
+strip3 = [1, 3, 6, 7, 8, 5, 3, 4, 2, 2, 1, 1, 2, 1]
 
 symbols = {
-    1:5,
-    2:25,
-    3:60,
-    4:150,
-    5:250,
-    6:500,
+    1:2, # 5
+    2:5, # 25
+    3:10, # 60
+    4:60, # 150
+    5:250, # 250
+    6:500, # 500
 }
 
 def check(strips):
@@ -63,7 +63,7 @@ def generateWeights(strips):
                 if multi == 0:
                     weight[(i, j, k)] = 1.0 
                 else:
-                    weight[(i, j, k)] = 1.0 / numpy.log(multi)
+                    weight[(i, j, k)] = 1.0 / numpy.log(numpy.log(multi))
     
     scale = len(weight.keys()) / sum(weight.values())
     #print(scale)
