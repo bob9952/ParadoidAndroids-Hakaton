@@ -53,11 +53,14 @@ screen = pygame.display.set_mode((width, height))
 pygame.display.set_caption("Slot Machine")
 logo = pygame.image.load('Assets/banana.png')
 pygame.display.set_icon(logo)
-background_color = [250, 239, 147]
+background_color = [230, 230, 230]
 
 balance_font = pygame.font.SysFont("Arial", 50)
 
 slot_machine = pygame.image.load('Assets/slot-machine.png')
+coins = pygame.image.load('Assets/coins.png')
+coins = pygame.transform.scale(coins, (50, 50))
+
 spinButton = pygame.Rect(370, 120, 60, 60)
 
 strips = [slot.strip1, slot.strip2, slot.strip3]
@@ -72,8 +75,10 @@ while run:
     screen.fill(background_color)
 
     screen.blit(slot_machine, (0, -40))
-    current_balance_text = balance_font.render("Balance: " + str(balance), True, (0, 0, 0))
-    screen.blit(current_balance_text, (500, 60))
+    current_balance_text = balance_font.render(str(balance), True, (0, 0, 0))
+    screen.blit(current_balance_text, (600, 60))
+    screen.blit(coins, (550, 70))
+   
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
