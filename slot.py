@@ -90,8 +90,6 @@ def simulateRTPNumOfIterations(numOfIterations, color):
 
     plt.plot(range(numOfIterations), ys, color=color)
     
-    
-
 
 def simulateRTP():
     global strip1, strip2, strip3, weight
@@ -106,10 +104,11 @@ def simulateRTP():
     print(100.0 * currentCapital / startingCapital)
 
 generateWeights([strip1, strip2, strip3])
-#printSlot(  [shift(strip1,i), shift(strip2, j), shift(strip3, k)])
-simulateRTP()
-colors = ["red", "blue", "green", "yellow", "pink", "brown", "black"]
 
-for color in colors:
-    simulateRTPNumOfIterations(100000, color)
-plt.show()
+if __name__ == "__main__":
+    simulateRTP()
+    colors = ["red", "blue", "green", "yellow", "pink", "brown", "black"]
+
+    for color in colors:
+        simulateRTPNumOfIterations(100000, color)
+    plt.show()
