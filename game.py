@@ -36,14 +36,16 @@ def drawOnSlot(screen, strips):
 
             screen.blit(image, positions[i][j])
 
-def spinClicked(spinButton):
+def buttonClicked(button):
     mouse_position = pygame.mouse.get_pos()
     
-    if spinButton.collidepoint(mouse_position):
+    if button.collidepoint(mouse_position):
         if pygame.mouse.get_pressed()[0] == 1:
             return True
 
     return False
+
+
 
 
 pygame.init()
@@ -64,12 +66,16 @@ coins = pygame.image.load('Assets/coins.png')
 coins = pygame.transform.scale(coins, (50, 50))
 
 spinButton = pygame.Rect(370, 120, 60, 60)
+lower100Button = pygame.Rect(95, 430, 40, 40)
+lower10Button = pygame.Rect(155, 430,40, 40)
+increase10Button = pygame.Rect(215, 430, 40, 40)
+increase100Button = pygame.Rect(275, 430 ,40, 40)
 
 strips = [slot.strip1, slot.strip2, slot.strip3]
 
 run = True
 balance = 1000
-bet_amount = 10
+bet_amount = 500
 n = 0
 i, j, k = slot.selectShifts()
     
@@ -89,14 +95,26 @@ while run:
         if event.type == pygame.QUIT:
             run = False
         if event.type == pygame.MOUSEBUTTONDOWN:
-            if spinClicked(spinButton): 
+            if buttonClicked(spinButton):
                 if balance >= bet_amount:
                     balance -= bet_amount
                     i, j, k = slot.selectShifts()   
                     strips = [slot.shift(slot.strip1,i), slot.shift(slot.strip2, j), slot.shift(slot.strip3, k)]
                     multi = slot.check(strips)
                     balance += multi * bet_amount 
-    
+            elif buttonClicked(lower100Button):
+                if bet_amount > 100:
+                    bet_amount -= 100
+            elif buttonClicked(lower10Button):
+                if bet_amount > 10:
+                    bet_amount -= 10
+            elif buttonClicked(increase10Button):
+                bet_amount += 10
+            elif buttonClicked(increase100Button):
+                bet_amount += 100
+            
+            
+
     drawOnSlot(screen, strips)
             
     n += 1

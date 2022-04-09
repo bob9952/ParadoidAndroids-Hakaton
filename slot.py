@@ -9,10 +9,10 @@ strip2 = [3, 3, 1, 2, 2, 6, 7, 8, 3, 2, 5, 4, 4, 1]
 strip3 = [1, 3, 6, 7, 8, 5, 3, 4, 2, 2, 1, 1, 2, 1]
 
 symbols = {
-    1:2, # 5
-    2:5, # 25
-    3:10, # 60
-    4:60, # 150
+    1:5, # 5
+    2:15, # 25
+    3:50, # 60
+    4:100, # 150
     5:250, # 250
     6:500, # 500
 }
@@ -63,9 +63,9 @@ def generateWeights(strips):
                 if multi == 0:
                     weight[(i, j, k)] = 1.0 
                 else:
-                    weight[(i, j, k)] = 1.0 / numpy.log(numpy.log(multi))
+                    weight[(i, j, k)] = 1.5 / numpy.log(multi)  # < 1.0
     
-    scale = len(weight.keys()) / sum(weight.values())
+    scale = 1.0 / sum(weight.values())
     #print(scale)
     for tuple in weight.keys():
         weight[tuple] *= scale 
@@ -93,15 +93,14 @@ def simulateRTPNumOfIterations(numOfIterations, color):
 
 def simulateRTP():
     global strip1, strip2, strip3, weight
-    startingCapital = sum(weight.values())
-    currentCapital = 0
+    currentCapital = 0.0
 
     for tuple, prob in weight.items():
         i, j, k = tuple
         multi = check([shift(strip1,i), shift(strip2, j), shift(strip3, k)])
         currentCapital += multi * prob
 
-    print(100.0 * currentCapital / startingCapital)
+    print(100.0 * currentCapital)
 
 generateWeights([strip1, strip2, strip3])
 
