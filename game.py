@@ -1,5 +1,7 @@
+from turtle import back
 import pygame
 import slot
+import time
 
 numToFruitName = {
     1:"apple",
@@ -28,6 +30,36 @@ positions = [ [(45,118), (45, 220), (45, 323)],
              [(158, 118), (158, 220), (158, 323)], 
              [(272, 118), (272, 220), (272, 323)]  ]
 
+
+def animate(screen, strips, i, j, k):
+    # 
+    num_of_shifts = len(strips[0])
+    i = i + num_of_shifts
+    j = j + num_of_shifts
+    k = k + num_of_shifts
+
+    p = 0
+    q = 0 
+    r = 0
+
+    while p < i or q < j or r < k:
+        clock.tick(8)
+        
+        if p < i:
+            p += 1
+        if q < j:
+            q += 1
+        if r < k:
+            r += 1
+
+        drawCanvas()   
+        new_strips = [slot.shift(strips[0], p), slot.shift(strips[1], q), slot.shift(strips[2], r)]  
+        #slot.printSlot(new_strips)
+
+        drawOnSlot(screen, new_strips)
+
+        pygame.display.update()
+       
 def drawOnSlot(screen, strips):
     global positions
     for i in range(3):
@@ -77,7 +109,7 @@ background_color = [230, 230, 230]
 
 balance_font = pygame.font.SysFont("Arial", 50)
 bet_amount_font = pygame.font.SysFont("Arial", 50)
-
+multipliers_font = pygame.font.SysFont("Arial", 35)
 
 slot_machine = pygame.image.load('Assets/slot-machine.png')
 coins = pygame.image.load('Assets/coins.png')
@@ -92,12 +124,22 @@ increase100Button = pygame.Rect(275, 430 ,40, 40)
 strips = [slot.strip1, slot.strip2, slot.strip3]
 
 run = True
+clock = pygame.time.Clock()
+
 balance = 1000
-bet_amount = 500
+bet_amount = 10
+strip_len = len(strips[0])
 n = 0
-i, j, k = slot.selectShifts()
-    
-while run:
+#i, j, k = slot.selectShifts()    
+#current_i = i
+#current_j = j
+#current_k = k
+i, j, k = 0, 0, 0
+current_i = 0
+current_j = 0
+current_k = 0
+
+def drawCanvas():
     screen.fill(background_color)
 
     screen.blit(slot_machine, (0, -40))
@@ -106,8 +148,27 @@ while run:
     screen.blit(coins, (550, 70))
     
     # TODO: dynamic text aligment
-    bet_amount_text = bet_amount_font.render(str(bet_amount), True, (0, 0, 0))
-    screen.blit(bet_amount_text, (175, 515))
+    bet_amount_text = bet_amount_font.render("Bet: " + str(bet_amount), True, (0, 0, 0))
+    screen.blit(bet_amount_text, (125, 515))
+
+    for i in range(1, 6):
+        fruitName = numToFruitName[i]
+        image = fruitNameToImage[fruitName]
+        image = pygame.transform.scale(image, (35, 35))
+        screen.blit(image, (540, 164 + (i - 1) * 50))
+        multipliers_text = multipliers_font.render("- x" + str(slot.symbols[i]), True, (0, 0, 0))
+        screen.blit(multipliers_text, (590, 162 + (i - 1) * 50))
+
+    totemImage = pygame.image.load("Assets/totem-full.png")
+    totemImage = pygame.transform.scale(totemImage, (28, 84))
+    screen.blit(totemImage, (545, 160 + (6 - 1) * 50))
+    multipliers_text = multipliers_font.render("- x" + str(slot.symbols[6]), True, (0, 0, 0))
+    screen.blit(multipliers_text, (590, 182 + (6 - 1) * 50))
+
+while run:
+    drawCanvas()
+
+    drawOnSlot(screen, strips)
 
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
@@ -116,7 +177,11 @@ while run:
             if buttonClicked(spinButton):
                 if balance >= bet_amount:
                     balance -= bet_amount
-                    i, j, k = slot.selectShifts()   
+                    i, j, k = slot.selectShifts()  
+                    animate(screen, strips, i - current_i + strip_len, j - current_j + strip_len , k - current_k + strip_len) 
+                    current_i = i
+                    current_j = j
+                    current_k = k
                     strips = [slot.shift(slot.strip1,i), slot.shift(slot.strip2, j), slot.shift(slot.strip3, k)]
                     multi = slot.check(strips)
                     balance += multi * bet_amount 
@@ -131,9 +196,7 @@ while run:
             elif buttonClicked(increase100Button):
                 bet_amount += 100
             
-            
-
-    drawOnSlot(screen, strips)
+        
             
     n += 1
 
