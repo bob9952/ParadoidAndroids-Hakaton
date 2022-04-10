@@ -196,20 +196,25 @@ def drawCanvas(row=-1, isWinningRow=False, isFlipped=False):
 
 
 def drawWin(strips, screen):
-    winSoundObj2.play()
-    winSoundObj2.set_volume(0.3)
+    #winSoundObj2.play()
+    #winSoundObj2.set_volume(0.3)
     winning_rows = []
     for i in range(3):
         if strips[0][i] == strips[1][i] and strips[1][i] == strips[2][i]:
             winning_rows.append(i)
 
     for row in winning_rows:
+        winSoundObj2.stop()
+        winSoundObj2.play()
+        winSoundObj2.set_volume(0.3)
+    
         for i in range(10):
+            clock.tick(12)
             drawCanvas(row, True if i % 2 else False)
             drawOnSlot(screen, strips)
-            clock.tick(10)
+            
             pygame.display.update()
-
+        
 
 while run:
     drawCanvas()

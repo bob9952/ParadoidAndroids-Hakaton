@@ -1,4 +1,5 @@
 import random
+from matplotlib.ft2font import BOLD
 import numpy
 import matplotlib.pyplot as plt
 
@@ -53,7 +54,6 @@ def generateWeights(strips):
     global weight
     
     for i in range(len(strips[0])):
-        #print(i)
         new_strip1 = shift(strips[0], i)
         for j in range(len(strips[0])):
             new_strip2 = shift(strips[1], j)
@@ -66,7 +66,7 @@ def generateWeights(strips):
                     weight[(i, j, k)] = 1.5 / numpy.log(multi)  # < 1.0
     
     scale = 1.0 / sum(weight.values())
-    #print(scale)
+    
     for tuple in weight.keys():
         weight[tuple] *= scale 
            
@@ -74,7 +74,6 @@ def simulateRTPNumOfIterations(numOfIterations, color):
     global strip1, strip2, strip3
     startingCapital = 100 * numOfIterations
     currentCapital = startingCapital
-    # average = 100
 
     ys = []
 
@@ -87,11 +86,11 @@ def simulateRTPNumOfIterations(numOfIterations, color):
         ys.append(currentRTP)
 
     print(100.0 * currentCapital / startingCapital, color)
+    #return 100.0 * currentCapital / startingCapital
 
     plt.plot(range(numOfIterations), ys, color=color)
-    
 
-def simulateRTP():
+def calculateRTP():
     global strip1, strip2, strip3, weight
     currentCapital = 0.0
 
@@ -104,10 +103,41 @@ def simulateRTP():
 
 generateWeights([strip1, strip2, strip3])
 
-if __name__ == "__main__":
-    simulateRTP()
-    colors = ["red", "blue", "green", "yellow", "pink", "brown", "black"]
+def tupleToString(bar):
+    return f"[${bar[0]}, ${bar[1]})"
 
+if __name__ == "__main__":
+    calculateRTP()
+    colors = ["red", "blue", "green", "yellow", "pink", "brown", "black"]
+    '''
+    bars = {
+        (60, 70) : 0,
+        (70, 75) : 0,
+        (75, 80) : 0,
+        (80, 85) : 0,
+        (85, 90) : 0,
+        (90, 95) : 0,
+        (95, 100) : 0,
+        (100, 105) : 0,
+        (105, 110) : 0,
+        (110, 115) : 0,
+        (115, 125) : 0,
+    }
+
+    for n in range(100):
+        rtp = simulateRTPNumOfIterations(100000)
+        for lower_bound, upper_bound in bars.keys():
+            if rtp < upper_bound and rtp >= lower_bound:
+                bars[(lower_bound, upper_bound)] += 1
+
+    bar_strings = [tupleToString(bar) for bar in bars.keys()]
+    
+    plt.bar(bar_strings, bars.values(), width=0.5)
+    plt.show()
+    '''
     for color in colors:
         simulateRTPNumOfIterations(100000, color)
+
+    plt.xlabel('Number of spins', fontweight="bold", fontsize=14)
+    plt.ylabel('Balance percentage', fontweight="bold", fontsize=14)
     plt.show()
