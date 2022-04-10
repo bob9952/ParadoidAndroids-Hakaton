@@ -112,9 +112,15 @@ multipliers_font = pygame.font.SysFont("Arial", 35, bold=True)
 slot_machine = pygame.image.load('Assets/slot-machine.png')
 slot_machine_flipped = pygame.image.load('Assets/slot-machine-flipped.png')
 background = pygame.image.load('Assets/background.jpg')
-background = pygame.transform.scale(background, (width, height))
+background_width, background_height = background.get_size()
+background_ratio = 1.0*background_width/background_height
+
+background = pygame.transform.scale(background, (width * background_ratio, height))
 coins = pygame.image.load('Assets/coins.png')
 coins = pygame.transform.scale(coins, (50, 50))
+
+spinSoundObj = pygame.mixer.Sound('Assets/spin-sound.wav')
+winSoundObj2 = pygame.mixer.Sound('Assets/win-sound.wav')
 
 spinButton = pygame.Rect(370, 120, 60, 60)
 lower100Button = pygame.Rect(95, 430, 40, 40)
@@ -148,25 +154,25 @@ def drawCanvas(row=-1, isWinningRow=False, isFlipped=False):
         if row == 0:
             pygame.draw.rect(screen, (255, 215, 0), (30, 115, 335, 98))
             pygame.draw.rect(screen, (230, 230, 230), (30, 215, 335, 98))
-            pygame.draw.rect(screen, (230, 230, 230), (30, 315, 335, 98))
+            pygame.draw.rect(screen, (230, 230, 230), (30, 315, 335, 100))
         if row == 1:
             pygame.draw.rect(screen, (230, 230, 230), (30, 115, 335, 98))
             pygame.draw.rect(screen, (255, 215, 0), (30, 215, 335, 98))
-            pygame.draw.rect(screen, (230, 230, 230), (30, 315, 335, 98))
+            pygame.draw.rect(screen, (230, 230, 230), (30, 315, 335, 100))
         if row == 2:
             pygame.draw.rect(screen, (230, 230, 230), (30, 115, 335, 98))
             pygame.draw.rect(screen, (230, 230, 230), (30, 215, 335, 98))
-            pygame.draw.rect(screen, (255, 215, 0), (30, 315, 335, 98))
+            pygame.draw.rect(screen, (255, 215, 0), (30, 315, 335, 100))
     else:
         pygame.draw.rect(screen, (230, 230, 230), (30, 115, 335, 98))
         pygame.draw.rect(screen, (230, 230, 230), (30, 215, 335, 98))
-        pygame.draw.rect(screen, (230, 230, 230), (30, 315, 335, 98))
+        pygame.draw.rect(screen, (230, 230, 230), (30, 315, 335, 100))
 
     if isFlipped:
         screen.blit(slot_machine_flipped, (0, -40))
     else:
         screen.blit(slot_machine, (0, -40))
-    current_balance_text = balance_font.render(str(balance), True, (230, 0, 0))
+    current_balance_text = balance_font.render(str(balance), True, (250, 0, 0))
     screen.blit(current_balance_text, (600, 60))
     screen.blit(coins, (550, 70))
 
@@ -179,17 +185,19 @@ def drawCanvas(row=-1, isWinningRow=False, isFlipped=False):
         image = fruitNameToImage[fruitName]
         image = pygame.transform.scale(image, (35, 35))
         screen.blit(image, (540, 164 + (i - 1) * 50))
-        multipliers_text = multipliers_font.render("- x" + str(slot.symbols[i]), True, (230, 0, 0))
+        multipliers_text = multipliers_font.render("- x" + str(slot.symbols[i]), True, (250, 0, 0))
         screen.blit(multipliers_text, (590, 162 + (i - 1) * 50))
 
     totemImage = pygame.image.load("Assets/totem-full.png")
     totemImage = pygame.transform.scale(totemImage, (28, 84))
     screen.blit(totemImage, (545, 160 + (6 - 1) * 50))
-    multipliers_text = multipliers_font.render("- x" + str(slot.symbols[6]), True, (230, 0, 0))
+    multipliers_text = multipliers_font.render("- x" + str(slot.symbols[6]), True, (250, 0, 0))
     screen.blit(multipliers_text, (590, 182 + (6 - 1) * 50))
 
 
 def drawWin(strips, screen):
+    winSoundObj2.play()
+    winSoundObj2.set_volume(0.3)
     winning_rows = []
     for i in range(3):
         if strips[0][i] == strips[1][i] and strips[1][i] == strips[2][i]:
@@ -214,6 +222,8 @@ while run:
         if event.type == pygame.MOUSEBUTTONDOWN:
             if buttonClicked(spinButton):
                 if balance >= bet_amount:
+                    spinSoundObj.play()
+                    spinSoundObj.set_volume(0.3)
                     balance -= bet_amount
 
                     i, j, k = slot.selectShifts()
